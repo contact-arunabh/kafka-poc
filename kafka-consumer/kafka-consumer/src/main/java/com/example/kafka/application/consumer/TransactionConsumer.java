@@ -55,8 +55,8 @@ public class TransactionConsumer extends AbstractConsumerSeekAware{
         	int index=0;
         	for(ConsumerRecord<String,TransactionTO> record: validRecords) {
         		try {
-        			log.info("Received a message on Kafka consumer for partition-{}, offset-{},Transaction Record-{},",
-							record.partition(),record.offset(),record.value());
+        			log.info("Received a message on Kafka consumer for partition-{}, offset-{},key: {}, Transaction Record-{},",
+							record.partition(),record.offset(),record.key(),record.value());
 					service.processTransaction(record.value());
 					index++;
         		}catch(Exception e) {
