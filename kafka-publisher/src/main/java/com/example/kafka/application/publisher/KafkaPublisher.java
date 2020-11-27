@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class KafkaPublisher {
 	
-	@Value(value = "${kafka.topic.name}")
+    @Value(value = "${kafka.topic.name}")
     private String topicName;
      
     @Autowired
@@ -26,13 +26,13 @@ public class KafkaPublisher {
 
     public void sendTransactionMessage(TransactionTO transaction) {
         
-    	ProducerRecord<String,TransactionTO> record=new ProducerRecord<>(topicName,transaction);
+    	ProducerRecord<String,TransactionTO> record=new ProducerRecord<>(topicName, transaction.getTransactionId(),transaction);
     	ListenableFuture<SendResult<String, TransactionTO>> future = this.kafkaTemplate.send(record);
         future.addCallback(new ListenableFutureCallback<SendResult<String, TransactionTO>>() {
             @Override
             public void onSuccess(SendResult<String, TransactionTO> result) {
             	RecordMetadata metadata=result.getRecordMetadata();
-                log.info("Transaction record [{}] to partition [{}], offset [{}] sent successfully",transaction,metadata.partition(), metadata.offset());
+                log.info("Transaction record [{}], key[{}] to partition [{}], offset [{}] sent successfully",transaction,transaction.getTransactionId(),metadata.partition(), metadata.offset());
             }
  
             @Override
